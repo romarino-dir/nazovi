@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Правила конкурса — Назови это по буквам</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7C3FA8;
+      --teal: #2ABFB8;
+      --dark: #0F0F1E;
+      --text: #2D2D2D;
+      --muted: #666;
+      --light: #F8F6FF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--light);
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(15,15,30,0.93);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0.85rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo { display: flex; gap: 3px; }
+    .mini-tile {
+      width: 26px; height: 26px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.78rem; font-weight: 900;
+    }
+    .mini-tile.p { background: #7C3FA8; }
+    .mini-tile.t { background: #2ABFB8; }
+
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      font-size: 0.82rem; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: white; }
+    .nav-back::before { content: '←'; }
+
+    /* HERO */
+    .rules-hero {
+      background:
+        radial-gradient(ellipse at 20% 60%, rgba(124,63,168,0.32) 0%, transparent 52%),
+        radial-gradient(ellipse at 80% 35%, rgba(42,191,184,0.18) 0%, transparent 52%),
+        linear-gradient(155deg, #08081A 0%, #130E38 50%, #071515 100%);
+      padding: 8rem 2rem 5rem;
+      text-align: center;
+    }
+
+    .rules-hero h1 {
+      color: white;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .rules-hero p {
+      color: rgba(255,255,255,0.55);
+      font-size: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* CONTENT */
+    .rules-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .rule-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      border-left: 4px solid transparent;
+    }
+
+    .rule-section:nth-child(odd)  { border-left-color: var(--purple); }
+    .rule-section:nth-child(even) { border-left-color: var(--teal); }
+
+    .rule-section h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .rule-num {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .rule-section:nth-child(odd)  .rule-num { background: var(--purple); }
+    .rule-section:nth-child(even) .rule-num { background: var(--teal); }
+
+    .rule-section p {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 0.85rem;
+    }
+    .rule-section p:last-child { margin-bottom: 0; }
+
+    .rule-section ul, .rule-section ol {
+      padding-left: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 0.85rem;
+    }
+    .rule-section ul:last-child, .rule-section ol:last-child { margin-bottom: 0; }
+
+    .rule-section li {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+
+    .rule-section strong {
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    /* Score highlight */
+    .score-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    .score-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .score-chip.t1 { background: rgba(42,191,184,0.12); color: #1A9993; }
+    .score-chip.t2 { background: rgba(124,63,168,0.12); color: var(--purple); }
+
+    /* CTA back */
+    .back-cta {
+      text-align: center;
+      padding: 2rem 0 4rem;
+    }
+    .back-cta a {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+      color: white; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      box-shadow: 0 6px 28px rgba(42,191,184,0.35);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .back-cta a:hover { transform: translateY(-3px); box-shadow: 0 10px 38px rgba(42,191,184,0.45); }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark); padding: 2rem;
+      text-align: center; color: rgba(255,255,255,0.32);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 600px) {
+      .rule-section { padding: 1.8rem 1.5rem; }
+      nav { padding: 0.75rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="mini-tile p">Н</div>
+    <div class="mini-tile t">А</div>
+    <div class="mini-tile p">З</div>
+    <div class="mini-tile t">О</div>
+    <div class="mini-tile p">В</div>
+    <div class="mini-tile t">И</div>
+  </div>
+  <a href="index.html" class="nav-back">На главную</a>
+</nav>
+
+<!-- HERO -->
+<div class="rules-hero">
+  <h1>Правила конкурса</h1>
+  <p>«Назови это по буквам» — двухэтапный конкурс орфографии для школьников 1–8 классов</p>
+</div>
+
+<!-- RULES BODY -->
+<div class="rules-body">
+
+  <div class="rule-section">
+    <h2><span class="rule-num">1</span>Общие положения</h2>
+    <p>Конкурс орфографии проводится организаторами — представителями государственной бюджетной общеобразовательной школы №1540 г. Москвы.</p>
+    <p>Конкурс представляет собой двухэтапное соревнование со строгой системой судейства, честной и стандартизированной процедурой определения победителя.</p>
+    <ul>
+      <li>Все решения судей и организаторов — окончательные и не подлежат обжалованию.</li>
+      <li>Организаторы могут изменять формат конкурса при необходимости.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">2</span>Участие</h2>
+    <p><strong>Участник должен:</strong></p>
+    <ul>
+      <li>быть учеником (обычно до 8 класса или соответствующего возраста);</li>
+      <li>пройти отборочный этап.</li>
+    </ul>
+    <p><strong>Участник может быть дисквалифицирован, если:</strong></p>
+    <ul>
+      <li>нарушает правила;</li>
+      <li>получает постороннюю помощь;</li>
+      <li>предоставляет недостоверную информацию.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">3</span>Структура конкурса</h2>
+    <p><strong>Первый тур — отборочный.</strong> Участники называют по буквам два словарных слова прошлого года обучения.</p>
+    <p><strong>Второй тур — конкурсный.</strong> Участники называют словарные слова по буквам текущего года в соответствии с классом обучения и одно супер-слово. Перед вторым туром участники получают задание прочитать рассказ или повесть соответственно возрасту, из которого будет выбрано супер-слово. Литературу можно выбрать из списка внеклассного чтения.</p>
+    <div class="score-row">
+      <div class="score-chip t1">★★★★ Первый тур: до 4 баллов</div>
+      <div class="score-chip t2">★★★★★★ Второй тур: до 6 баллов</div>
+    </div>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">4</span>Процедура произнесения слова</h2>
+    <p><strong>Когда участник получает слово, он может запросить:</strong></p>
+    <ul>
+      <li>повтор слова;</li>
+      <li>определение;</li>
+      <li>пример употребления;</li>
+      <li>происхождение слова;</li>
+      <li>часть речи.</li>
+    </ul>
+    <p><strong>После начала произнесения:</strong> участник может исправиться, если не обозначил завершение. После завершения изменить ответ нельзя.</p>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">5</span>Ошибки, выбывание, победа</h2>
+    <ul>
+      <li>Ошибка в орфографии — минус 1 балл.</li>
+      <li>Ошибка в названии буквы — минус 1 балл.</li>
+      <li>Первый тур: максимум 4 балла (по 2 балла за каждое слово).</li>
+      <li>Второй тур: максимум 6 баллов (по 2 балла за два словарных слова и одно супер-слово).</li>
+    </ul>
+    <p>Участники, набравшие наибольшее количество баллов, проходят в следующий тур. В итоге баллы за первый и второй тур суммируются — победитель определяется в каждой параллели. Все участники находятся в равных условиях.</p>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">6</span>Судейство</h2>
+    <ul>
+      <li>Судьи следят за соблюдением правил.</li>
+      <li>Решения принимаются на основе стандартного произношения и написания.</li>
+      <li>Любые спорные случаи решаются судьями окончательно.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">7</span>Поведение участников</h2>
+    <p><strong>Участники обязаны:</strong></p>
+    <ul>
+      <li>соблюдать честность;</li>
+      <li>не использовать подсказки;</li>
+      <li>уважать других участников и судей.</li>
+    </ul>
+    <p><strong>Запрещено:</strong></p>
+    <ul>
+      <li>использование электронных устройств;</li>
+      <li>помощь со стороны;</li>
+      <li>любые формы мошенничества.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">8</span>Технические и организационные правила</h2>
+    <ul>
+      <li>Порядок выступления определяется организаторами.</li>
+      <li>Участники должны присутствовать вовремя.</li>
+      <li>Возможны изменения формата из-за технических или организационных причин.</li>
+      <li>Допускаются трансляции и запись мероприятия.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">9</span>Списки слов</h2>
+    <ul>
+      <li>Используются школьные списки и официальные учебные материалы.</li>
+      <li>Слова подбираются по уровню сложности и этапу конкурса.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">10</span>Равенство и честность</h2>
+    <ul>
+      <li>Всем участникам предоставляются равные условия.</li>
+      <li>Слова распределяются справедливо.</li>
+    </ul>
+  </div>
+
+  <div class="rule-section">
+    <h2><span class="rule-num">11</span>Форс-мажор</h2>
+    <p>Организаторы могут:</p>
+    <ul>
+      <li>изменить формат конкурса;</li>
+      <li>перенести или отменить этапы;</li>
+      <li>адаптировать конкурс под обстоятельства.</li>
+    </ul>
+  </div>
+
+  <div class="back-cta">
+    <a href="index.html">← Вернуться на главную</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 «Назови это по буквам» — конкурс орфографии для школьников &nbsp;·&nbsp; Москва</p>
+</footer>
+
+</body>
+</html>
