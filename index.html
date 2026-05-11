@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Назови это по буквам — Конкурс орфографии для школьников</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7C3FA8;
+      --teal: #2ABFB8;
+      --dark: #0F0F1E;
+      --text: #2D2D2D;
+      --muted: #777;
+      --light: #F8F6FF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(15,15,30,0.93);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0.85rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo { display: flex; gap: 3px; }
+    .mini-tile {
+      width: 26px; height: 26px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.78rem; font-weight: 900;
+    }
+    .mini-tile.p { background: #7C3FA8; }
+    .mini-tile.t { background: #2ABFB8; }
+
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 0.82rem; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: white; }
+    .nav-cta {
+      color: var(--teal) !important;
+      border: 1.5px solid var(--teal);
+      padding: 0.42rem 1.1rem;
+      border-radius: 50px;
+    }
+    .nav-cta:hover { background: var(--teal) !important; color: white !important; }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 7rem 2rem 5rem;
+      background:
+        radial-gradient(ellipse at 25% 55%, rgba(124,63,168,0.38) 0%, transparent 52%),
+        radial-gradient(ellipse at 78% 40%, rgba(42,191,184,0.22) 0%, transparent 52%),
+        linear-gradient(155deg, #08081A 0%, #130E38 50%, #071515 100%);
+    }
+
+    /* Scrabble Logo */
+    .scrabble-logo { margin-bottom: 3rem; }
+    .s-row { display: flex; justify-content: center; gap: 6px; margin-bottom: 6px; }
+
+    .s-tile {
+      width: 82px; height: 82px;
+      border-radius: 10px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding-top: 9px;
+      color: white;
+      position: relative;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.4);
+    }
+    .s-tile.p { background: #7C3FA8; }
+    .s-tile.t { background: #2ABFB8; }
+    .s-tile.blank { background: transparent; box-shadow: none; }
+    .s-tile .letter { font-size: 2.6rem; font-weight: 900; line-height: 1; }
+    .s-tile .lname { font-size: 0.5rem; opacity: 0.8; font-weight: 600; position: absolute; bottom: 7px; }
+
+    .hero-tag {
+      color: var(--teal); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .hero-h1 {
+      color: white; font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+      font-weight: 700; max-width: 600px;
+      margin-bottom: 1rem; line-height: 1.3;
+    }
+    .hero-sub {
+      color: rgba(255,255,255,0.5); font-size: 1rem;
+      max-width: 480px; margin-bottom: 2.5rem;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, #7C3FA8, #2ABFB8);
+      color: white; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      box-shadow: 0 6px 28px rgba(42,191,184,0.38);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 38px rgba(42,191,184,0.48); }
+
+    /* SECTIONS */
+    .section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .eyebrow {
+      color: var(--teal); font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 0.7rem;
+    }
+    .section-h2 {
+      font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+      font-weight: 800; color: var(--dark);
+      margin-bottom: 1rem; line-height: 1.25;
+    }
+    .section-h2 em { font-style: normal; color: var(--purple); }
+    .section-lead {
+      color: var(--muted); font-size: 1.02rem;
+      max-width: 600px; line-height: 1.8; margin-bottom: 3rem;
+    }
+
+    /* ABOUT */
+    #about { background: white; }
+    .about-grid {
+      display: grid; grid-template-columns: 1.2fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .about-text p { color: #555; line-height: 1.8; margin-bottom: 1.2rem; font-size: 1rem; }
+
+    .example-box {
+      background: linear-gradient(145deg, #6B2A9E, #9A4FD2);
+      border-radius: 20px; padding: 2.5rem 2rem;
+      text-align: center; color: white;
+      box-shadow: 0 22px 55px rgba(107,42,158,0.38);
+    }
+    .example-word { font-size: 1.9rem; font-weight: 900; letter-spacing: 0.04em; margin-bottom: 1.4rem; }
+    .example-divider { width: 36px; height: 2px; background: rgba(255,255,255,0.35); margin: 0 auto 1.4rem; }
+    .example-spelling { font-size: 1rem; opacity: 0.9; line-height: 2.1; }
+    .example-label { margin-top: 1.4rem; font-size: 0.7rem; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.14em; }
+
+    /* BENEFITS */
+    #benefits { background: var(--light); }
+    .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+    .benefit-card {
+      background: white; border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+      border-top: 4px solid transparent;
+    }
+    .benefit-card.children { border-top-color: var(--teal); }
+    .benefit-card.teachers { border-top-color: var(--purple); }
+
+    .card-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .card-emoji { font-size: 2rem; }
+    .card-head h3 { font-size: 1.15rem; font-weight: 800; }
+    .benefit-card.children h3 { color: var(--teal); }
+    .benefit-card.teachers h3 { color: var(--purple); }
+
+    .benefit-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .benefit-card li {
+      color: #555; padding-left: 1.4rem;
+      position: relative; line-height: 1.6; font-size: 0.95rem;
+    }
+    .benefit-card.children li::before { content: '◆'; position: absolute; left: 0; color: var(--teal); font-size: 0.55rem; top: 0.4em; }
+    .benefit-card.teachers li::before { content: '◆'; position: absolute; left: 0; color: var(--purple); font-size: 0.55rem; top: 0.4em; }
+
+    /* MISSION */
+    #mission {
+      background: linear-gradient(155deg, #090918 0%, #160A30 60%, #080F0F 100%);
+      position: relative; overflow: hidden;
+    }
+    #mission::after {
+      content: '';
+      position: absolute; right: -150px; top: -150px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(42,191,184,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #mission .section-h2 { color: white; }
+    #mission .section-lead { color: rgba(255,255,255,0.52); max-width: 680px; }
+
+    .mission-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .mission-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 16px; padding: 2rem;
+      position: relative;
+    }
+    .mission-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; border-radius: 16px 16px 0 0;
+    }
+    .mission-card:nth-child(1)::before { background: var(--teal); }
+    .mission-card:nth-child(2)::before { background: var(--purple); }
+    .mission-card:nth-child(3)::before { background: linear-gradient(90deg, var(--teal), var(--purple)); }
+    .mission-card p { color: rgba(255,255,255,0.72); line-height: 1.75; font-size: 0.95rem; }
+
+    /* ROUNDS */
+    #rounds { background: white; }
+    .rounds-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+    .round-card {
+      border-radius: 22px; padding: 3rem 2.5rem;
+      color: white; position: relative; overflow: hidden;
+    }
+    .round-card.r1 { background: linear-gradient(145deg, #2ABFB8, #1A9993); }
+    .round-card.r2 { background: linear-gradient(145deg, #7C3FA8, #5A1A9E); }
+
+    .round-bg-num {
+      position: absolute; right: -5px; top: -20px;
+      font-size: 9rem; font-weight: 900; opacity: 0.13; line-height: 1;
+      pointer-events: none;
+    }
+    .round-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2); color: white;
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.28rem 0.85rem; border-radius: 50px; margin-bottom: 1.1rem;
+    }
+    .round-card h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem; position: relative; }
+    .round-period { font-size: 0.78rem; opacity: 0.72; margin-bottom: 1.4rem; position: relative; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+    .round-card p { opacity: 0.9; line-height: 1.75; font-size: 0.94rem; position: relative; margin-bottom: 1.5rem; }
+    .round-score {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.2);
+      padding: 0.45rem 1.1rem; border-radius: 50px;
+      font-size: 0.83rem; font-weight: 700; position: relative;
+    }
+
+    /* GALLERY */
+    #gallery { background: var(--light); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 220px;
+      gap: 12px;
+    }
+    .g-item {
+      border-radius: 14px; overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #d8ceed, #bee8e6);
+    }
+    .g-item.wide { grid-column: span 2; }
+    .g-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s; display: block; }
+    .g-item:hover img { transform: scale(1.06); }
+
+    .g-placeholder {
+      width: 100%; height: 100%; min-height: 180px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.4rem; color: rgba(70,50,110,0.45);
+      font-size: 0.72rem; text-align: center; padding: 1rem;
+    }
+    .g-icon { font-size: 2rem; opacity: 0.5; }
+
+    /* TEAM */
+    #team { background: white; }
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; }
+    .team-card { text-align: center; }
+
+    .team-avatar {
+      width: 160px; height: 160px;
+      border-radius: 50%; overflow: hidden;
+      margin: 0 auto 1.5rem;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--purple), var(--teal));
+    }
+    .team-avatar-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%; overflow: hidden;
+      background: linear-gradient(135deg, #d8ceed, #bee8e6);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .team-avatar-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .team-avatar-placeholder { font-size: 3.5rem; opacity: 0.4; }
+
+    .team-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; }
+    .team-card .role { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+    .team-card .school { margin-top: 0.45rem; font-size: 0.8rem; font-weight: 600; color: var(--teal); }
+
+    /* CONTACT */
+    #contact {
+      background: linear-gradient(135deg, var(--purple) 0%, #1A9993 100%);
+      text-align: center;
+    }
+    #contact .section-h2 { color: white; }
+    #contact .section-lead { color: rgba(255,255,255,0.78); margin: 0 auto 2.5rem; }
+    .email-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: white; color: var(--purple);
+      font-weight: 800; font-size: 1.05rem;
+      text-decoration: none; padding: 1rem 2.4rem;
+      border-radius: 50px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .email-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.28); }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark); padding: 2rem;
+      text-align: center; color: rgba(255,255,255,0.32);
+      font-size: 0.78rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .mission-cards { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 700px) {
+      .benefits-grid, .rounds-wrap { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(2,1fr); grid-auto-rows: 160px; }
+      .g-item.wide { grid-column: span 1; }
+      .team-grid { grid-template-columns: 1fr; }
+      .s-tile { width: 50px; height: 50px; border-radius: 7px; }
+      .s-tile .letter { font-size: 1.65rem; }
+      .s-tile.blank { width: 50px; height: 50px; }
+      .s-row { gap: 4px; margin-bottom: 4px; }
+      nav { padding: 0.75rem 1.2rem; }
+      .nav-links a:not(.nav-cta) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="mini-tile p">Н</div>
+    <div class="mini-tile t">А</div>
+    <div class="mini-tile p">З</div>
+    <div class="mini-tile t">О</div>
+    <div class="mini-tile p">В</div>
+    <div class="mini-tile t">И</div>
+  </div>
+  <div class="nav-links">
+    <a href="#about">О конкурсе</a>
+    <a href="#rounds">Этапы</a>
+    <a href="#gallery">Фото</a>
+    <a href="#team">Организаторы</a>
+    <a href="rules.html" class="nav-cta">Правила конкурса</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="scrabble-logo">
+    <div class="s-row">
+      <div class="s-tile p"><span class="letter">Н</span><span class="lname">эн</span></div>
+      <div class="s-tile t"><span class="letter">А</span><span class="lname">а</span></div>
+      <div class="s-tile p"><span class="letter">З</span><span class="lname">зэ</span></div>
+      <div class="s-tile t"><span class="letter">О</span><span class="lname">о</span></div>
+      <div class="s-tile p"><span class="letter">В</span><span class="lname">вэ</span></div>
+      <div class="s-tile t"><span class="letter">И</span><span class="lname">и</span></div>
+    </div>
+    <div class="s-row">
+      <div class="s-tile t"><span class="letter">Э</span><span class="lname">э</span></div>
+      <div class="s-tile p"><span class="letter">Т</span><span class="lname">тэ</span></div>
+      <div class="s-tile t"><span class="letter">О</span><span class="lname">о</span></div>
+      <div class="s-tile blank"></div>
+      <div class="s-tile p"><span class="letter">П</span><span class="lname">пэ</span></div>
+      <div class="s-tile t"><span class="letter">О</span><span class="lname">о</span></div>
+    </div>
+    <div class="s-row">
+      <div class="s-tile t"><span class="letter">Б</span><span class="lname">бэ</span></div>
+      <div class="s-tile p"><span class="letter">У</span><span class="lname">у</span></div>
+      <div class="s-tile t"><span class="letter">К</span><span class="lname">ка</span></div>
+      <div class="s-tile p"><span class="letter">В</span><span class="lname">вэ</span></div>
+      <div class="s-tile t"><span class="letter">А</span><span class="lname">а</span></div>
+      <div class="s-tile p"><span class="letter">М</span><span class="lname">эм</span></div>
+    </div>
+  </div>
+  <p class="hero-tag">Конкурс орфографии</p>
+  <h1 class="hero-h1">Для школьников 1–8 классов</h1>
+  <p class="hero-sub">Авторская адаптация всемирно-известного конкурса — соревнование в знании словарных слов русского языка.</p>
+  <a href="#about" class="btn-primary">Узнать подробнее</a>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="container">
+    <p class="eyebrow">О конкурсе</p>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 class="section-h2">Что такое <em>«Назови это по буквам»</em>?</h2>
+        <p>Это авторская адаптация всемирно-известного конкурса. Участники соревнуются в знании словарных слов, называя их по буквам (не звукам) в соответствии с нормами русского алфавита и орфографии.</p>
+        <p>Дети начинают «чувствовать» язык, учителя получают новый игровой инструмент вовлечения в предмет.</p>
+      </div>
+      <div class="example-box">
+        <div class="example-word">Конституция</div>
+        <div class="example-divider"></div>
+        <div class="example-spelling">Ка — О — Эн — Эс — Тэ — И — Тэ — У — Цэ — И — Я</div>
+        <div class="example-label">Пример произношения слова со сцены</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section id="benefits" class="section">
+  <div class="container">
+    <p class="eyebrow">Для кого</p>
+    <h2 class="section-h2">Что даёт <em>участие</em></h2>
+    <p class="section-lead">Конкурс одновременно полезен и детям, и педагогам.</p>
+    <div class="benefits-grid">
+      <div class="benefit-card children">
+        <div class="card-head">
+          <div class="card-emoji">🎓</div>
+          <h3>Детям</h3>
+        </div>
+        <ul>
+          <li>Проверить свои знания и орфографическую зоркость</li>
+          <li>Развить чувство языка</li>
+          <li>«Поиграть» в русский язык</li>
+        </ul>
+      </div>
+      <div class="benefit-card teachers">
+        <div class="card-head">
+          <div class="card-emoji">👩‍🏫</div>
+          <h3>Учителям</h3>
+        </div>
+        <ul>
+          <li>Способ сделать обучение ярче и интереснее</li>
+          <li>Возможность вовлечь учеников в процесс через игру</li>
+          <li>Вдохновение для новых методических идей и профилактика профессионального выгорания</li>
+          <li>Проверка усвоения словарных слов</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section id="mission" class="section">
+  <div class="container">
+    <p class="eyebrow" style="color:var(--teal)">Миссия</p>
+    <h2 class="section-h2">Расширяем интерес к русскому языку через увлекательную работу со словарными словами</h2>
+    <p class="section-lead">Каждый конкурс — шаг к более грамотному и любознательному поколению.</p>
+    <div class="mission-cards">
+      <div class="mission-card">
+        <p>Формируется уважение к родной речи и культуре языка</p>
+      </div>
+      <div class="mission-card">
+        <p>Повышается грамотность — ученики осознанно запоминают написание слов</p>
+      </div>
+      <div class="mission-card">
+        <p>Создаётся основа для устойчивого роста образовательных результатов</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUNDS -->
+<section id="rounds" class="section">
+  <div class="container">
+    <p class="eyebrow">Формат</p>
+    <h2 class="section-h2">Конкурс проходит <em>в два этапа</em></h2>
+    <p class="section-lead">Между первым и вторым туром — один месяц подготовки.</p>
+    <div class="rounds-wrap">
+      <div class="round-card r1">
+        <div class="round-bg-num">1</div>
+        <div class="round-badge">Первый тур</div>
+        <h3>Отборочный</h3>
+        <p class="round-period">Сентябрь — октябрь</p>
+        <p>Участники называют по буквам 2 словарных слова прошлого года обучения. Ошибка в орфографии — минус 1 балл, ошибка в названии буквы — минус 1 балл. Участники, набравшие наибольшее количество баллов, проходят во второй тур.</p>
+        <div class="round-score">★★★★&nbsp; До 4 баллов</div>
+      </div>
+      <div class="round-card r2">
+        <div class="round-bg-num">2</div>
+        <div class="round-badge">Второй тур</div>
+        <h3>Конкурсный</h3>
+        <p class="round-period">Ноябрь — декабрь</p>
+        <p>Участники называют словарные слова текущего года по классу обучения и одно супер-слово из прочитанного произведения. Баллы суммируются с первым туром — победитель определяется в каждой параллели.</p>
+        <div class="round-score">★★★★★★&nbsp; До 6 баллов</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="section">
+  <div class="container">
+    <p class="eyebrow">Фотогалерея</p>
+    <h2 class="section-h2">Конкурс <em>в лицах</em></h2>
+    <p class="section-lead" style="margin-bottom:2.5rem">Моменты первого и второго туров.</p>
+
+    <div class="gallery-grid">
+      <div class="g-item wide">
+        <img src="images/gallery-1.jpg" alt="Первый тур — зрители в зале">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-2.jpg" alt="Первый тур — выступление участника">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-3.jpg" alt="Первый тур — у микрофона">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-4.jpg" alt="Первый тур — участники">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-5.jpg" alt="Второй тур — выступление">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-6.jpg" alt="Второй тур — в классе">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-7.jpg" alt="Второй тур — участники">
+      </div>
+      <div class="g-item">
+        <img src="images/gallery-8.jpg" alt="Второй тур — работа с жюри">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team" class="section">
+  <div class="container">
+    <p class="eyebrow">Организаторы</p>
+    <h2 class="section-h2">Идейные вдохновители и <em>авторы конкурса</em></h2>
+    <p class="section-lead" style="margin-bottom:2.5rem">Педагоги-новаторы, влюблённые в русский язык.</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">
+          <div class="team-avatar-inner">
+            <img src="images/organizer-kira.jpg" alt="Директович Кира Юрьевна">
+          </div>
+        </div>
+        <h3>Директович Кира Юрьевна</h3>
+        <p class="role">Учитель начальных классов</p>
+        <p class="school">Школа ОРТ 1540, Москва</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">
+          <div class="team-avatar-inner">
+            <img src="images/organizer-vlada.jpg" alt="Кошелева Влада Вячеславовна">
+          </div>
+        </div>
+        <h3>Кошелева Влада Вячеславовна</h3>
+        <p class="role">Учитель словесности, методист</p>
+        <p class="school">Школа ОРТ 1540, Москва</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">
+          <div class="team-avatar-inner">
+            <img src="images/organizer-elizaveta.jpg" alt="Хадикова Елизавета Андреевна">
+          </div>
+        </div>
+        <h3>Хадикова Елизавета Андреевна</h3>
+        <p class="role">Учитель словесности, методист</p>
+        <p class="school">Школа Letovo Junior, Москва</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="container">
+    <p class="eyebrow" style="color:rgba(255,255,255,0.6)">Контакты</p>
+    <h2 class="section-h2">Напишите нам</h2>
+    <p class="section-lead">Если у вас есть вопросы о конкурсе или вы хотите принять участие — мы всегда рады ответить.</p>
+    <a href="mailto:nazovietopobukvam@gmail.com" class="email-btn">
+      ✉️ nazovietopobukvam@gmail.com
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 «Назови это по буквам» — конкурс орфографии для школьников &nbsp;·&nbsp; Москва</p>
+</footer>
+
+</body>
+</html>
